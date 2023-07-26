@@ -44,17 +44,23 @@ export default class CreateRoomPage extends Component {
     e.preventDefault(); // Prevent the default form submission
 
     createRoom(this.state.votesToSkip, this.state.guestCanPause)
-    .then((response) => {
-      this.setState({ roomId: response.data.id });
-    })
-    .catch((error) => {
-      this.setState({ error: 'There was an error creating the room.' });
-    });
+      .then((response) => {
+        this.setState({ roomId: response.data.id });
+        console.log(response.data);
+        return response.data;
+      })
+      .then((data) => {
+        this.props.history.push(`/room/${data.code}`);
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({ error: 'There was an error creating the room.' });
+      });
   }
 
   render() {
     return (
-      <Grid container spacing={1}>
+      <Grid container align="center" spacing={1}>
         <Grid item xs={12} align="center">
           <Typography component="h4" variant="h4">
             Create A Room

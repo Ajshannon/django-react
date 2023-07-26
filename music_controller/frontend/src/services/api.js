@@ -12,3 +12,22 @@ export function createRoom(votesToSkip, guestCanPause) {
 
   return axios.post('/api/create-room', data, { headers: headers });
 }
+
+export function getRoom(roomCode) {
+  return axios.get('/api/get-room', {
+    params: {
+      code: roomCode
+    }
+  });
+}
+
+export function joinRoom(roomCode) {
+  const csrfToken = Cookies.get('csrftoken');
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken
+  };
+  const data = { code: roomCode };
+
+  return axios.post('/api/join-room', data, { headers: headers });
+}
