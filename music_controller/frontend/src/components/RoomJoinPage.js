@@ -1,73 +1,65 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { TextField, Button, Grid, Typography } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { joinRoom } from "../services/api";
 
-export default class RoomJoinPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      roomCode: "",
-      error: "",
-    };
-    this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
-    this.roomButtonPressed = this.roomButtonPressed.bind(this);
-  }
+const RoomJoinPage = () => {
+  const [roomCode, setRoomCode] = useState("");
+  const [error, setError] = useState("");
+  const history = useHistory();
 
-  render() {
-    return (
-      <Grid container spacing={1}>
-        <Grid item xs={12} align="center">
-          <Typography variant="h4" component="h4">
-            Join a Room
-          </Typography>
-        </Grid>
-        <Grid item xs={12} align="center">
-          <TextField
-            error={this.state.error}
-            label="Code"
-            placeholder="Enter a Room Code"
-            value={this.state.roomCode}
-            helperText={this.state.error}
-            variant="outlined"
-            onChange={this.handleTextFieldChange}
-          />
-        </Grid>
-        <Grid item xs={12} align="center">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={this.roomButtonPressed}
-          >
-            Enter Room
-          </Button>
-        </Grid>
-        <Grid item xs={12} align="center">
-          <Button variant="contained" color="secondary" to="/" component={Link}>
-            Back
-          </Button>
-        </Grid>
-      </Grid>
-    );
-  }
+  const handleTextFieldChange = (e) => {
+    setRoomCode(e.target.value);
+  };
 
-  handleTextFieldChange(e) {
-    this.setState({
-      roomCode: e.target.value,
-    });
-  }
-
-  roomButtonPressed() {
-    joinRoom(this.state.roomCode)
+  const roomButtonPressed = () => {
+    joinRoom(roomCode)
       .then((response) => {
         if (response.status === 200) {
-          this.props.history.push(`/room/${this.state.roomCode}`);
+          history.push(`/room/${roomCode}`);
         } else {
-          this.setState({ error: "Room not found." });
+          setError("Room not found.");
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }
-}
+  };
+
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={12} align="center">
+        <Typography variant="h4" component="h4">
+          Join a Room
+        </Typography>
+      </Grid>
+      <Grid item xs={12} align="center">
+        <TextField
+          error={error}
+          label="Code"
+          placeholder="Enter a Room Code"
+          value={roomCode}
+          helperText={error}
+          variant="outlined"
+          onChange={handleTextFieldChange}
+        />
+      </Grid>
+      <Grid item xs={12} align="center">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={roomButtonPressed}
+        >
+          Enter Room
+        </Button>
+      </Grid>
+      <Grid item xs={12} align="center">
+        <Button variant="contained" color="secondary" to="/" component={Link}>
+          Back
+        </Button>
+      </Grid>
+    </Grid>
+  );
+};
+
+export default RoomJoinPage;
